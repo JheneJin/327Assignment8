@@ -14,15 +14,10 @@ def QueryToList(query):
 	l = []
 
 	for item in query:
-
 		device_asset_uid = item['payload']['device_asset_uid']
-
 		last_key = list(item['payload'].keys())[-1]
-
 		last_item = item['payload'][last_key]
-
 		l.append([device_asset_uid, last_item])
-
 	return l;
 
 def QueryDatabase() -> []:
@@ -80,29 +75,20 @@ def QueryDatabase() -> []:
 		highways = {}
 
 		for item in currentDocuments:
-
 			newProjection = {'_id': 0, 'latitude': 1, 'longitude': 1, 'eventTypes':1}
-
 			metaTable = db['Traffic Data_metadata']
-
 			currLocation = metaTable.find_one({'assetUid': item[0]}, newProjection)
 
 			if currLocation:
 				hName = currLocation['eventTypes'][0][0]['boards'][0]['name']
 				hName = hName.replace(' Device Board','')
-
-				#print(highways)
-
 				latitude = currLocation.get('latitude', 0)
 				longitude = currLocation.get('longitude', 0)
-
 				if (latitude, longitude) in highways:
 					highways[(latitude, longitude)] = [highways[(latitude, longitude)][0]+item[1], highways[(latitude, longitude)][1]+1, hName]
 				else:
 					highways[(latitude, longitude)] = [item[1],1,hName]
-
 			currLocation = None
-
 
 		sortList = []
 
@@ -125,6 +111,6 @@ def QueryDatabase() -> []:
 		traceback.print_exc()
 		exit(0)
 
-# 	# finally:
-# 	# 	if client:
-# 	# 		client.close()
+	finally:
+		if client:
+			client.close()
