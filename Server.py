@@ -11,7 +11,9 @@ import sys
 import json
 
 maxPacketSize = 1024
-defaultPort = 24251
+# defaultPort = 24251
+serverIP = input("Enter host ip address: ")
+defaultPort = input("Enter host port here: ")
 
 exitSignal = False
 
@@ -20,7 +22,7 @@ def GetFreePort(minPort: int = 1024, maxPort: int = 65535):
         print("Testing port",i);
         with contextlib.closing(socket.socket(socket.AF_INET, socket.SOCK_STREAM)) as potentialPort:
             try:
-                potentialPort.bind(('localhost', i));
+                potentialPort.bind((serverIP, i));
                 potentialPort.close();
                 print("Server listening on port",i);
                 return i
@@ -57,9 +59,9 @@ def ListenOnTCP(tcpSocket: socket.socket, socketAddress):
 
 def CreateTCPSocket() -> socket.socket:
     tcpSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM);
-    tcpPort = defaultPort
+    tcpPort = int(defaultPort)
     print("TCP Port:",tcpPort);
-    tcpSocket.bind(('localhost', tcpPort));
+    tcpSocket.bind((serverIP, tcpPort));
     return tcpSocket;
 
 def LaunchTCPThreads():
